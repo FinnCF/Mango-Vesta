@@ -55,6 +55,58 @@ tokens = {
 }
 ```
 
+## Current Factors:
+
+### Mean Slippage
+Calculates the average slippage for specified USDC values by fetching the slippage for each value, summing them up, and dividing by the number of values.
+
+### Market Cap Rank
+Fetches and returns the market cap rank of the token.
+
+### Market Cap
+Fetches and returns the market cap of the token in USD.
+
+### Fully Diluted Valuation
+Fetches and returns the fully diluted valuation of the token in USD.
+
+### 24-hour Trading Volume
+Fetches and returns the 24-hour trading volume of the token in USD.
+
+### Volume Volatility
+Calculates the volatility of the hourly volume over the last 30 days.
+
+### Returns Volatility
+Calculates the volatility of the token by computing the standard deviation of the log returns.
+
+### Normalized Returns Volatility
+Calculates the normalized volatility by dividing the volatility by the absolute value of the mean returns.
+
+### Alexa Rank
+Fetches and returns the Alexa rank of the token's website.
+
+### CoinGecko Rank
+Fetches and returns the CoinGecko rank of the token.
+
+### Token Tickers Length
+Returns the total amount of tickers; more is considered safer.
+
+### Age
+Calculates the age of the token by fetching its creation timestamp and comparing it to the current date.
+
+### Token Transactions
+Fetches and returns the total number of transactions associated with the token.
+
+### Token Transfers
+Fetches and returns the total number of token transfers.
+
+### Top Holders Herfindahl-Hirschman Index (HHI)
+Calculates the Herfindahl-Hirschman Index (HHI) as a measurement of concentration among the top holders of the token.
+
+### Oracle Confidence
+Fetches and returns the oracle confidence value for the token.
+
+
+
 ## Contributing
 
 We welcome contributions to Mango Vesta. Please feel free to submit pull requests, create issues or spread the word.
