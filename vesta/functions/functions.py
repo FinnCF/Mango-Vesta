@@ -30,8 +30,10 @@ class Functions:
         return value
 
     @staticmethod
-    def invlinear(x: float, a: float = 1, b: float = 1, c: float = 1) -> float:
-        """Inverse linear function constrained to [0, 1].
+    def invrational_1(x: float, a: float = 1, b: float = 1, c: float = 25) -> float:
+        """Inverse rational function constrained to [0, 1].
+        DESMOS: https://www.desmos.com/calculator/wdrcpucyye
+
         
         Args:
             x (float): Input value.
@@ -41,8 +43,59 @@ class Functions:
             float: Constrained output value.
         """
                 
-        output = a / (b + (x * c))
+        output = a / (b + (x * (1 / c)))
         return  Functions._validate_output(output)
+    
+
+    @staticmethod
+    def invrational_2(x: float, a: float = 1, b: float = 1, c: float = 25) -> float:
+        """Inverse rational 2 function constrained to [0, 1].
+        DESMOS: https://www.desmos.com/calculator/j2hodwrtem
+
+        
+        Args:
+            x (float): Input value.
+            a, b, c (float): Parameters of the function.
+
+        Returns:
+            float: Constrained output value.
+        """
+                
+        output = a / (b + (x * (1 / c)))
+        return  Functions._validate_output(output)
+        
+    @staticmethod
+    def genlogistic_1(x: float, a: float = 1, b: float = 1, c: float = 25, d: float = 1) -> float:
+        """Generalized logistic 1 function constrained to [0, 1].
+        DESMOS: https://www.desmos.com/calculator/cc7wisjl4u
+        
+        Args:
+            x (float): Input value.
+            a, b, c, d (float): Parameters of the function.
+
+        Returns:
+            float: Constrained output value.
+        """
+                
+        output = -a / (b + (1/c) * math.exp((1/d) * x)) + 1
+        return Functions._validate_output(output)
+
+    @staticmethod
+    def genlogistic_2(x: float, a: float = 1, b: float = 1, c: float = 25, d: float = 1) -> float:
+        """Generalized logistic 2 function constrained to [0, 1].
+        DESMOS: https://www.desmos.com/calculator/srettiqm4d
+        
+        Args:
+            x (float): Input value.
+            a, b, c, d (float): Parameters of the function.
+
+        Returns:
+            float: Constrained output value.
+        """
+                
+        output = a / (b + (1/c) * math.exp((1/d) * x))
+        return Functions._validate_output(output)
+
     
     @staticmethod
     def generalized_tanh(x: float, a: float, b: float, c: float, d: float) -> float:

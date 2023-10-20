@@ -54,22 +54,22 @@ class Vesta:
         """
         # Define factors and their weights (gammas)
         factors = {
-            'calculate_mean_slippage': 0.2,
-            'calculate_market_cap_rank': 0.1,
-            'calculate_alexa_rank': 0.1,
-            'calculate_market_cap': 0.1,
-            'calculate_fully_diluted_valuation': 0.05,
-            'calculate_coingecko_rank': 0.05,
-            'calculate_24h_volume': 0.1,
-            'calculate_returns_volatility': 0.1,
-            'calculate_abs_normalised_returns_volatility': 0.05,
-            'calculate_volume_volatility': 0.03,
-            'calculate_age': 0.01,
-            'calculate_token_transactions': 0.06,
-            'calculate_token_transfers': 0.02,
-            'calculate_top_holders_HHI': 0.01,
-            'calculate_token_tickers_length': 0.01,
-            'calculate_oracle_confidence': 0.01
+            'calculate_mean_slippage': 0.0625,
+            'calculate_market_cap_rank':0.0625,
+            'calculate_alexa_rank': 0.0625,
+            'calculate_market_cap': 0.0625,
+            'calculate_fully_diluted_valuation': 0.0625,
+            'calculate_coingecko_rank': 0.0625,
+            'calculate_24h_volume': 0.0625,
+            'calculate_returns_volatility': 0.0625,
+            'calculate_abs_normalised_returns_volatility': 0.0625,
+            'calculate_volume_volatility':0.0625,
+            'calculate_age': 0.0625,
+            'calculate_token_transactions': 0.0625,
+            'calculate_token_transfers': 0.0625,
+            'calculate_top_holders_HHI': 0.0625,
+            'calculate_token_tickers_length': 0.0625,
+            'calculate_oracle_confidence': 0.0625
         }
         
         assert round(sum(factors.values())) == 1, 'Total Gammas MUST equal one in Vesta Model'        
@@ -89,7 +89,31 @@ class Vesta:
                 pbar.set_description(f"{token.symbol}: Calculated {method_name}: {factor_value}")
                 pbar.update(1)
 
-            pbar.set_description(f"Rated {token.symbol}: {total_value}")
+            pbar.set_description(f"Rated {token.symbol}: {total_value}, {self.rate_total_value(total_value)}")
 
         return total_value
-        
+    
+    def rate_total_value(self, total_value: float) -> str:
+        match total_value:
+            case _ if 0.0 <= total_value < 0.1:
+                return 'D'
+            case _ if 0.1 <= total_value < 0.2:
+                return 'CCC'
+            case _ if 0.2 <= total_value < 0.3:
+                return 'CC'
+            case _ if 0.3 <= total_value < 0.4:
+                return 'C'
+            case _ if 0.4 <= total_value <= 0.5:
+                return 'BBB'
+            case _ if 0.5 <= total_value <= 0.6:
+                return 'BB'
+            case _ if 0.6 <= total_value <= 0.7:
+                return 'B'
+            case _ if 0.7 <= total_value <= 0.8:
+                return 'AAA'
+            case _ if 0.8 <= total_value <= 0.9:
+                return 'AA'
+            case _ if 0.9 <= total_value <= 1:
+                return 'A'
+            case _:
+                raise ValueError(f'Invalid rating value: {total_value}')

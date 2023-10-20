@@ -32,79 +32,78 @@ class EthTokenFactors:
             time.sleep(0.1)
 
         mean_slippage = sum(slippages) / len(slippages)
-        return self.functions.invlinear(mean_slippage, 1, 1, 1)
+        return self.functions.invrational_1(mean_slippage, 1, 1, 20)
 
-    def calculate_market_cap_rank(self) -> float:
-        # Fetch and return the market cap rank of the token using an inverse linear transformation.
-        market_cap_rank = self.token_data['market_cap_rank']
-        return self.functions.invlinear(market_cap_rank, 1, 1, 1)
-    
     def calculate_market_cap(self) -> float:
-        # Fetch and return the market cap of the token using an inverse linear transformation.
+        # Fetch and return the market cap of the token using an inverse rational transformation.
         market_cap = self.token_data['market_data']['market_cap']['usd']
-        return self.functions.invlinear(market_cap, 1, 1, 1)
+        return self.functions.invrational_2(market_cap, 1, 1, 10 ** -6.5)
+    
+    def calculate_market_cap_rank(self) -> float:
+        # Fetch and return the market cap rank of the token using an inverse rational transformation.
+        market_cap_rank = self.token_data['market_cap_rank']
+        return self.functions.invrational_1(market_cap_rank, 1, 1, 5000)
 
     def calculate_fully_diluted_valuation(self) -> float:
-        # Fetch and return the fully diluted valuation of the token using an inverse linear transformation.
+        # Fetch and return the fully diluted valuation of the token using an inverse rational transformation.
         fully_diluted_valuation = self.token_data['market_data']['fully_diluted_valuation']['usd']
-        return self.functions.invlinear(fully_diluted_valuation, 1, 1, 1)
+        return self.functions.invrational_2(fully_diluted_valuation, 1, 1, 10 ** -6.7)
     
     def calculate_24h_volume(self) -> float:
-        # Fetch and return the 24-hour trading volume of the token using an inverse linear transformation.
+        # Fetch and return the 24-hour trading volume of the token using an inverse rational transformation.
         _24h_volume = self.token_data['market_data']['total_volume']['usd']
-        return self.functions.invlinear(_24h_volume, 1, 1, 1)
+        return self.functions.genlogistic_1(_24h_volume, 1, 1, 50, 50000)
 
     def calculate_volume_volatility(self) -> float:
         # Calculate the volatility of the hourly volume over the last 30 days
-        volatility = self.token_historical_market_data['price'].std()
-        return self.functions.invlinear(volatility, 1, 1, 1)
+        volatility = self.token_historical_market_data['volume'].std()
+        return self.functions.genlogistic_2(volatility, 1, 1, 50, 15000)
     
     def calculate_returns_volatility(self) -> float:
         # Calculate the volatility of the token by computing the standard deviation of the log returns.
         log_returns = np.log(self.token_historical_market_data['price']/self.token_historical_market_data['price'].shift(1)).dropna()
         volatility = log_returns.std()
-        return self.functions.invlinear(volatility, 1, 1, 1)
+        return self.functions.genlogistic_2(volatility, 1, 1, 50, 0.03)
         
     def calculate_abs_normalised_returns_volatility(self) -> float:
         # Calculate the normalized volatility by dividing the volatility by the absolute value of the mean returns,
-        # using an inverse linear transformation for the output.
+        # using an inverse rational transformation for the output.
         log_returns = np.log(self.token_historical_market_data['price']/self.token_historical_market_data['price'].shift(1)).dropna()
         volatility = log_returns.std()
         mean_returns = log_returns.mean()
         norm_volatility = volatility / abs(mean_returns) if mean_returns != 0 else 0
-        return self.functions.invlinear(norm_volatility)
-
-    def calculate_alexa_rank(self) -> float:
-        # Fetch and return the Alexa rank of the token's website using an inverse linear transformation.
-        alexa_rank = self.token_data['public_interest_stats']['alexa_rank']
-        return self.functions.invlinear(alexa_rank, 1, 1, 1)
-
-    def calculate_coingecko_rank(self) -> float:
-        # Fetch and return the CoinGecko rank of the token using an inverse linear transformation.
-        coingecko_rank = self.token_data['coingecko_rank']
-        return self.functions.invlinear(coingecko_rank, 1, 1, 1)
-
+        return self.functions.genlogistic_2(volatility, 1, 1, 50, 1)
+    
     def calculate_token_tickers_length(self) -> float:
         # Total amount of tickers (more is safer)
         tickers_length = len(self.token_data['tickers'])
-        return self.functions.invlinear(tickers_length, 1, 1, 1)
+        return self.functions.invrational_1(tickers_length, 1, 1, 0.7)
+
+    def calculate_alexa_rank(self) -> float:
+        # Fetch and return the Alexa rank of the token's website using an inverse rational transformation.
+        alexa_rank = self.token_data['public_interest_stats']['alexa_rank']
+        return self.functions.invrational_1(alexa_rank, 1, 1, 1000000)
+
+    def calculate_coingecko_rank(self) -> float:
+        coingecko_rank = self.token_data['coingecko_rank']
+        return self.functions.invrational_1(coingecko_rank, 1, 1, 1000)
     
     def calculate_age(self) -> float:
-        # Fetch and return the CoinGecko rank of the token using an inverse linear transformation.
+        # Fetch and return the CoinGecko rank of the token using an inverse rational transformation.
         (creation_timestamp, creation_block_number, creation_hash) = self.data.get_eth_contract_creation_timestamp_block_hash(self.token)
         creation_datetime = pd.to_datetime(creation_timestamp, unit='s')
         age = (pd.to_datetime('today') - creation_datetime).days
-        return self.functions.invlinear(age, 1, 1, 1)
+        return self.functions.genlogistic_1(age, 1, 1, 50, 150)
     
     def calculate_token_transactions(self) -> float:
-        # Fetch and return the CoinGecko rank of the token using an inverse linear transformation.
+        # Fetch and return the CoinGecko rank of the token using an inverse rational transformation.
         transactions = float(self.get_wallet_stats['transactions']['total'])
-        return self.functions.invlinear(transactions, 1, 1, 1)
+        return self.functions.genlogistic_1(transactions, 1, 1, 50, 5000)
     
     def calculate_token_transfers(self) -> float:
-        # Fetch and return the CoinGecko rank of the token using an inverse linear transformation.
+        # Fetch and return the CoinGecko rank of the token using an inverse rational transformation.
         transactions = float(self.get_wallet_stats['token_transfers']['total'])
-        return self.functions.invlinear(transactions, 1, 1, 1)
+        return self.functions.genlogistic_1(transactions, 1, 1, 50, 4000)
     
     def calculate_top_holders_HHI(self) -> float:
         # The Herfindahl-Hirschman Index (HHI) as a measurement of the concentration. 
@@ -114,9 +113,9 @@ class EthTokenFactors:
         others = 1 - sum(holders['share']) # All other outside 100 holders (seen as one holder)
         holders['share_squared'] = holders['share'] ** 2
         HHI = holders['share_squared'].sum() + (others ** 2)
-        return self.functions.invlinear(HHI, 1, 1, 1)
+        return self.functions.genlogistic_2(HHI, 1, 1, 50, 0.1)
     
     def calculate_oracle_confidence(self) -> float:
-        # Fetch and return the CoinGecko rank of the token using an inverse linear transformation.
+        # Fetch and return the CoinGecko rank of the token using an inverse rational transformation.
         confidence = float(self.oracle_data['confidence'])
-        return self.functions.invlinear(confidence, 1, 1, 1)
+        return self.functions.genlogistic_2(confidence, 1, 1, 50, 0.05)
