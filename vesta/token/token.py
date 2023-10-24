@@ -6,7 +6,7 @@ import re
 import requests
 
 class Token:
-    def __init__(self, symbol: str, sol_address: str, eth_address: Address, sol_decimals: int, eth_decimals: int, oracle_address: str) -> None:
+    def __init__(self, symbol: str, coingecko_id: str, sol_address: str, eth_address: Address, sol_decimals: int, eth_decimals: int, oracle_address: str) -> None:
         # Validation
         if not sol_address or not eth_address:
             raise ValueError("All fields must be non-empty.")
@@ -19,6 +19,7 @@ class Token:
 
         # Assigning values to attributes
         self.symbol = symbol
+        self.coingecko_id = coingecko_id
         self.sol_address = sol_address
         self.eth_address = eth_address
         self.sol_decimals = sol_decimals

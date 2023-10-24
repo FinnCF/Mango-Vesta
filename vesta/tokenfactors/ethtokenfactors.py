@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 import time
 
-class EthTokenFactors:
+class TokenFactors:
     """
     A class to calculate token factors for Ethereum tokens.
     """
@@ -35,7 +35,6 @@ class EthTokenFactors:
 
     def calculate_market_cap(self) -> float:
         # Fetch and return the market cap of the token using an inverse rational transformation.
-        print(self.token_data)
         market_cap = self.token_data['market_data']['market_cap']['usd']
         if market_cap == 0: return None
         return self.functions.invrational_2(market_cap, 1, 1, 10 ** -6.3)
@@ -71,6 +70,7 @@ class EthTokenFactors:
     def calculate_alexa_rank(self) -> float:
         # Fetch and return the Alexa rank of the token's website using an inverse rational transformation.
         alexa_rank = self.token_data['public_interest_stats']['alexa_rank']
+        if alexa_rank == None: return None
         return self.functions.invrational_1(alexa_rank, 1, 1, 1000000)
 
     def calculate_coingecko_rank(self) -> float:
@@ -102,5 +102,4 @@ class EthTokenFactors:
     def calculate_oracle_confidence(self) -> float:
         # Fetch and return the CoinGecko rank of the token using an inverse rational transformation.
         confidence = float((100 * self.oracle_data['confidence']) / self.oracle_data['price'])
-        print(confidence)
         return self.functions.genlogistic_2(confidence, 1, 1, 50, 0.05)

@@ -20,10 +20,10 @@ class CoinGecko:
         float | None: The current price in USD or None if an error occurs.
         """
         try:
-            response_API = requests.get(f'https://api.coingecko.com/api/v3/simple/price?ids={token.symbol.lower()}&vs_currencies=usd')
+            response_API = requests.get(f'https://api.coingecko.com/api/v3/simple/price?ids={token.coingecko_id}&vs_currencies=usd')
             if response_API.status_code == 200:
                 response_json = response_API.json()
-                return response_json.get(token.symbol.lower(), {}).get('usd', 0.0)
+                return response_json.get(token.coingecko_id, {}).get('usd', 0.0)
             else:
                 logging.warning(f'Failed to fetch price. HTTP Status Code: {response_API.status_code}')
                 return None
@@ -42,7 +42,7 @@ class CoinGecko:
         dict | None: A dictionary containing token data or None if an error occurs.
         """
         try:
-            response_API = requests.get(f'https://api.coingecko.com/api/v3/coins/{token.symbol.lower()}')
+            response_API = requests.get(f'https://api.coingecko.com/api/v3/coins/{token.coingecko_id.lower()}')
             if response_API.status_code == 200:
                 response_json = response_API.json()
                 return response_json
@@ -66,7 +66,7 @@ class CoinGecko:
         pd.DataFrame | None: A DataFrame containing historical market data or None if an error occurs.
         """
         try:
-            response_API = requests.get(f'https://api.coingecko.com/api/v3/coins/{token.symbol.lower()}/market_chart?vs_currency={base_currency}&days={days}')
+            response_API = requests.get(f'https://api.coingecko.com/api/v3/coins/{token.coingecko_id}/market_chart?vs_currency={base_currency}&days={days}')
             if response_API.status_code == 200:
                 response_json = response_API.json()
                 df_prices = pd.DataFrame(response_json['prices'], columns=['timestamp', 'price'])

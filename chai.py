@@ -13,5 +13,5 @@ chai = Token(**tokens.get("CHAI"))
 
 for token in tokens:
     vsta.rate(Token(**tokens.get(token)))
-    time.sleep(0.1)
+    time.sleep(1)
 

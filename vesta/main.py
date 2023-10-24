@@ -4,7 +4,7 @@ from web3 import Web3, HTTPProvider, IPCProvider, WebsocketProvider
 from solana.rpc.api import Client as SolClient
 from typing import Union, Type
 from vesta.token.token import Token
-from vesta.tokenfactors.ethtokenfactors import EthTokenFactors
+from vesta.tokenfactors.TokenFactors import TokenFactors
 from tqdm import tqdm
 from etherscan import Etherscan
 from vesta.data.moralis import MoralisClient
@@ -79,7 +79,7 @@ class Vesta:
             # Initialize a variable to keep track of the total valid weight
             total_valid_weight = 0
             method_results = {}
-            token_factors = EthTokenFactors(self.data, token)
+            token_factors = TokenFactors(self.data, token)
             for method_name, gamma in factors.items():
                 pbar.set_description(f"{token.symbol}: Calculating {method_name}...")
                 pbar.update(1)
@@ -101,7 +101,7 @@ class Vesta:
             ranking = self.rate_total_value(total_value)
             pbar.set_description(f"Rated {token.symbol}: {total_value}, {ranking}")
             pbar.set_description(f"{token.symbol}: Calculating Total Valid Weight")
-            
+
         print(f'{token.symbol} Ranked with {total_value}, {ranking} with Vesta Risk Paramers: ', risk_ranking_parameters[ranking])
         return total_value
     
