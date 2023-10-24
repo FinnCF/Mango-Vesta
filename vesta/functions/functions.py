@@ -61,7 +61,7 @@ class Functions:
             float: Constrained output value.
         """
                 
-        output = a / (b + (x * (1 / c)))
+        output = -(a / (b + (x * c))) + 1
         return  Functions._validate_output(output)
         
     @staticmethod
@@ -76,8 +76,8 @@ class Functions:
         Returns:
             float: Constrained output value.
         """
-                
-        output = -a / (b + (1/c) * math.exp((1/d) * x)) + 1
+        if x > 1000000: return 1 # Prevent overflow
+        output = -a / (b + (1/c) * np.exp((1/d) * x)) + 1
         return Functions._validate_output(output)
 
     @staticmethod
@@ -93,7 +93,7 @@ class Functions:
             float: Constrained output value.
         """
                 
-        output = a / (b + (1/c) * math.exp((1/d) * x))
+        output = a / (b + (1/c) * np.exp((1/d) * x))
         return Functions._validate_output(output)
 
     
@@ -122,8 +122,8 @@ class Functions:
             NotInRangeError: If the output value is not in [0, 1].
         """
 
-        numerator = math.exp(c * x) - math.exp(-d * x)
-        denominator = math.exp(c * x) + math.exp(-d * x)
+        numerator = np.exp(c * x) - np.exp(-d * x)
+        denominator = np.exp(c * x) + np.exp(-d * x)
         output = a + b * (numerator / denominator)
         return Functions._validate_output(output)
     

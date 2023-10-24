@@ -8,6 +8,7 @@ from vesta.tokenfactors.ethtokenfactors import EthTokenFactors
 from tqdm import tqdm
 from etherscan import Etherscan
 from vesta.data.moralis import MoralisClient
+from .rankings import risk_ranking_parameters
 
 class Vesta:
     """
@@ -54,43 +55,54 @@ class Vesta:
         """
         # Define factors and their weights (gammas)
         factors = {
-            'calculate_mean_slippage': 0.0625,
-            'calculate_market_cap_rank':0.0625,
+            'calculate_mean_slippage': 0.0925,
+            'calculate_market_cap_rank':0.1075,
             'calculate_alexa_rank': 0.0625,
             'calculate_market_cap': 0.0625,
             'calculate_fully_diluted_valuation': 0.0625,
-            'calculate_coingecko_rank': 0.0625,
+            'calculate_coingecko_rank': 0.0325,
             'calculate_24h_volume': 0.0625,
-            'calculate_returns_volatility': 0.0625,
-            'calculate_abs_normalised_returns_volatility': 0.0625,
-            'calculate_volume_volatility':0.0625,
-            'calculate_age': 0.0625,
-            'calculate_token_transactions': 0.0625,
-            'calculate_token_transfers': 0.0625,
+            'calculate_returns_volatility': 0.1425,
+            'calculate_age': 0.0925,
+            'calculate_token_transactions': 0.125,
             'calculate_top_holders_HHI': 0.0625,
-            'calculate_token_tickers_length': 0.0625,
+            'calculate_token_tickers_length': 0.0325,
             'calculate_oracle_confidence': 0.0625
         }
         
         assert round(sum(factors.values())) == 1, 'Total Gammas MUST equal one in Vesta Model'        
 
         with tqdm(total=len(factors) + 1, desc="Calculating Factors") as pbar:
-            
-            pbar.set_description(f"{token.symbol}: Initializing TokenFactors")
+
+            pbar.set_description(f"{token.symbol}: Calculating Total Valid Weight")
+
+            # Initialize a variable to keep track of the total valid weight
+            total_valid_weight = 0
+            method_results = {}
             token_factors = EthTokenFactors(self.data, token)
+            for method_name, gamma in factors.items():
+                pbar.set_description(f"{token.symbol}: Calculating {method_name}...")
+                pbar.update(1)
+                method = getattr(token_factors, method_name, None)
+                method_result = method() if method is not None else None
+                method_results[method_name] = method_result
+                if method_result is not None:
+                    total_valid_weight += gamma
+                    pbar.set_description(f"{token.symbol}: Calculated {method_name}: {method_result}")
+            assert total_valid_weight > 0, 'No valid factors, cannot calculate rating'
+            pbar.set_description(f"{token.symbol}: Valid Weight: {total_valid_weight}")
             pbar.update(1)
             
             total_value = 0
             for method_name, gamma in factors.items():
-                pbar.set_description(f"{token.symbol}: Calculating {method_name}...")
-                method = getattr(token_factors, method_name)
-                factor_value = method()
-                total_value += gamma * factor_value
-                pbar.set_description(f"{token.symbol}: Calculated {method_name}: {factor_value}")
-                pbar.update(1)
-
-            pbar.set_description(f"Rated {token.symbol}: {total_value}, {self.rate_total_value(total_value)}")
-
+                factor_value = method_results[method_name]
+                if factor_value is not None: 
+                    total_value += (gamma / total_valid_weight) * factor_value
+            ranking = self.rate_total_value(total_value)
+            pbar.set_description(f"Rated {token.symbol}: {total_value}, {ranking}")
+            pbar.set_description(f"{token.symbol}: Calculating Total Valid Weight")
+            
+        print(f'{token.symbol} Ranked with {total_value}, {ranking} with Vesta Risk Paramers: ', risk_ranking_parameters[ranking])
         return total_value
     
     def rate_total_value(self, total_value: float) -> str:

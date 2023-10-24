@@ -29,55 +29,44 @@ class EthTokenFactors:
         slippages = []
         for value in usdc_values:
             slippages.append(self.data.jupiter.get_usdc_swap_price_slippage(self.token, value))
-            time.sleep(0.1)
-
+            time.sleep(2)
         mean_slippage = sum(slippages) / len(slippages)
-        return self.functions.invrational_1(mean_slippage, 1, 1, 20)
+        return self.functions.invrational_1(mean_slippage, 1, 1, 10)
 
     def calculate_market_cap(self) -> float:
         # Fetch and return the market cap of the token using an inverse rational transformation.
+        print(self.token_data)
         market_cap = self.token_data['market_data']['market_cap']['usd']
-        return self.functions.invrational_2(market_cap, 1, 1, 10 ** -6.5)
+        if market_cap == 0: return None
+        return self.functions.invrational_2(market_cap, 1, 1, 10 ** -6.3)
     
     def calculate_market_cap_rank(self) -> float:
         # Fetch and return the market cap rank of the token using an inverse rational transformation.
         market_cap_rank = self.token_data['market_cap_rank']
+        if market_cap_rank == None: return None
         return self.functions.invrational_1(market_cap_rank, 1, 1, 5000)
 
     def calculate_fully_diluted_valuation(self) -> float:
         # Fetch and return the fully diluted valuation of the token using an inverse rational transformation.
         fully_diluted_valuation = self.token_data['market_data']['fully_diluted_valuation']['usd']
-        return self.functions.invrational_2(fully_diluted_valuation, 1, 1, 10 ** -6.7)
+        return self.functions.invrational_2(fully_diluted_valuation, 1, 1, 10 ** -8)
     
     def calculate_24h_volume(self) -> float:
         # Fetch and return the 24-hour trading volume of the token using an inverse rational transformation.
         _24h_volume = self.token_data['market_data']['total_volume']['usd']
+        if _24h_volume == 0: return None
         return self.functions.genlogistic_1(_24h_volume, 1, 1, 50, 50000)
-
-    def calculate_volume_volatility(self) -> float:
-        # Calculate the volatility of the hourly volume over the last 30 days
-        volatility = self.token_historical_market_data['volume'].std()
-        return self.functions.genlogistic_2(volatility, 1, 1, 50, 15000)
     
     def calculate_returns_volatility(self) -> float:
         # Calculate the volatility of the token by computing the standard deviation of the log returns.
         log_returns = np.log(self.token_historical_market_data['price']/self.token_historical_market_data['price'].shift(1)).dropna()
         volatility = log_returns.std()
         return self.functions.genlogistic_2(volatility, 1, 1, 50, 0.03)
-        
-    def calculate_abs_normalised_returns_volatility(self) -> float:
-        # Calculate the normalized volatility by dividing the volatility by the absolute value of the mean returns,
-        # using an inverse rational transformation for the output.
-        log_returns = np.log(self.token_historical_market_data['price']/self.token_historical_market_data['price'].shift(1)).dropna()
-        volatility = log_returns.std()
-        mean_returns = log_returns.mean()
-        norm_volatility = volatility / abs(mean_returns) if mean_returns != 0 else 0
-        return self.functions.genlogistic_2(volatility, 1, 1, 50, 1)
     
     def calculate_token_tickers_length(self) -> float:
         # Total amount of tickers (more is safer)
         tickers_length = len(self.token_data['tickers'])
-        return self.functions.invrational_1(tickers_length, 1, 1, 0.7)
+        return self.functions.invrational_2(tickers_length, 1, 1, 0.3)
 
     def calculate_alexa_rank(self) -> float:
         # Fetch and return the Alexa rank of the token's website using an inverse rational transformation.
@@ -98,12 +87,7 @@ class EthTokenFactors:
     def calculate_token_transactions(self) -> float:
         # Fetch and return the CoinGecko rank of the token using an inverse rational transformation.
         transactions = float(self.get_wallet_stats['transactions']['total'])
-        return self.functions.genlogistic_1(transactions, 1, 1, 50, 5000)
-    
-    def calculate_token_transfers(self) -> float:
-        # Fetch and return the CoinGecko rank of the token using an inverse rational transformation.
-        transactions = float(self.get_wallet_stats['token_transfers']['total'])
-        return self.functions.genlogistic_1(transactions, 1, 1, 50, 4000)
+        return self.functions.genlogistic_1(transactions, 1, 1, 50, 3000)
     
     def calculate_top_holders_HHI(self) -> float:
         # The Herfindahl-Hirschman Index (HHI) as a measurement of the concentration. 
@@ -113,9 +97,10 @@ class EthTokenFactors:
         others = 1 - sum(holders['share']) # All other outside 100 holders (seen as one holder)
         holders['share_squared'] = holders['share'] ** 2
         HHI = holders['share_squared'].sum() + (others ** 2)
-        return self.functions.genlogistic_2(HHI, 1, 1, 50, 0.1)
+        return self.functions.genlogistic_2(HHI, 1, 1, 50, 0.05)
     
     def calculate_oracle_confidence(self) -> float:
         # Fetch and return the CoinGecko rank of the token using an inverse rational transformation.
-        confidence = float(self.oracle_data['confidence'])
+        confidence = float((100 * self.oracle_data['confidence']) / self.oracle_data['price'])
+        print(confidence)
         return self.functions.genlogistic_2(confidence, 1, 1, 50, 0.05)

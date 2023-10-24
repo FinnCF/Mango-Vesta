@@ -6,10 +6,9 @@ import re
 import requests
 
 class Token:
-    def __init__(self, symbol: str, sol_address: str, eth_address: Address, sol_decimals: int, eth_decimals: int,
-                 sol_created_at_block: int, eth_created_at_block: int, origin: str, bridging_entity: str, oracle_address: str) -> None:
+    def __init__(self, symbol: str, sol_address: str, eth_address: Address, sol_decimals: int, eth_decimals: int, oracle_address: str) -> None:
         # Validation
-        if not sol_address or not eth_address or not origin or not bridging_entity:
+        if not sol_address or not eth_address:
             raise ValueError("All fields must be non-empty.")
 
         if not Web3.is_address(eth_address):
@@ -24,9 +23,5 @@ class Token:
         self.eth_address = eth_address
         self.sol_decimals = sol_decimals
         self.eth_decimals = eth_decimals
-        self.sol_created_at_block = sol_created_at_block
-        self.eth_created_at_block = eth_created_at_block
-        self.origin = origin
-        self.bridging_entity = bridging_entity
         self.oracle_address = oracle_address
 
