@@ -20,7 +20,7 @@ class CoinGecko:
         float | None: The current price in USD or None if an error occurs.
         """
         try:
-            response_API = requests.get(f'https://api.coingecko.com/api/v3/simple/price?ids={token.coingecko_id}&vs_currencies=usd')
+            response_API = requests.get(f'https://api.coingecko.com/api/v3/simple/price?ids={token.coingecko_id.lower()}&vs_currencies=usd')
             if response_API.status_code == 200:
                 response_json = response_API.json()
                 return response_json.get(token.coingecko_id, {}).get('usd', 0.0)

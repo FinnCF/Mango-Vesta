@@ -2,6 +2,7 @@ from vesta.main import Vesta
 from vesta.constants import tokens
 from web3 import Web3
 from vesta.token import Token
+import pandas as pd
 import time
 
 # Instantiate the web3 researc provider with etherscan and infura
@@ -11,7 +12,20 @@ vsta = Vesta(
     moralis_api_key='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6ImVjMzQ4Y2I2LTU1YmMtNGU0My1iNWY5LTc3YTNjYmYwZjZkNyIsIm9yZ0lkIjoiNTAwMDEiLCJ1c2VySWQiOiI0OTY1OCIsInR5cGVJZCI6IjI1NDFhNTZjLWE2MjEtNGJiMy04YjZlLTA2OGRlNTY0NzE0MiIsInR5cGUiOiJQUk9KRUNUIiwiaWF0IjoxNjk3NDg2OTg1LCJleHAiOjQ4NTMyNDY5ODV9.zvAk6YCAL1oYdMF4T7gw9RIF19Hbve4L6qUJS1I8hsQ')
 chai = Token(**tokens.get("CHAI"))
 
-for token in tokens:
-    vsta.rate(Token(**tokens.get(token)))
-    time.sleep(1)
+# Initialize empty list to hold dictionaries
+rankings_list = []
 
+# Iterate over tokens
+for token in tokens:
+    token_chosen = Token(**tokens.get(token))
+    [symbol, method_results, ranking, total_value] = vsta.rate(token_chosen)
+    method_results['symbol'] = symbol
+    method_results['total_value'] = total_value
+    method_results['ranking'] = ranking
+    rankings_list.append(method_results)
+    time.sleep(15)
+
+# Convert list of dictionaries to DataFrame
+rankings = pd.DataFrame(rankings_list)
+print(rankings)
+rankings.to_csv('rankings.csv', index=False)

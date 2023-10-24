@@ -5,6 +5,7 @@ from typing import List
 import pandas as pd
 import numpy as np
 import time
+import random
 
 class TokenFactors:
     """
@@ -29,7 +30,7 @@ class TokenFactors:
         slippages = []
         for value in usdc_values:
             slippages.append(self.data.jupiter.get_usdc_swap_price_slippage(self.token, value))
-            time.sleep(2)
+            time.sleep(random.random() * 10)
         mean_slippage = sum(slippages) / len(slippages)
         return self.functions.invrational_1(mean_slippage, 1, 1, 10)
 
@@ -79,6 +80,7 @@ class TokenFactors:
     
     def calculate_age(self) -> float:
         # Fetch and return the CoinGecko rank of the token using an inverse rational transformation.
+        if(self.token.type == 'sol'): return None # Need to calculate age for Solana tokens (not yet implemented)
         (creation_timestamp, creation_block_number, creation_hash) = self.data.get_eth_contract_creation_timestamp_block_hash(self.token)
         creation_datetime = pd.to_datetime(creation_timestamp, unit='s')
         age = (pd.to_datetime('today') - creation_datetime).days
@@ -86,11 +88,13 @@ class TokenFactors:
     
     def calculate_token_transactions(self) -> float:
         # Fetch and return the CoinGecko rank of the token using an inverse rational transformation.
+        if(self.token.type == 'sol'): return None # Need to calculate token transactions for Solana tokens (not yet implemented)
         transactions = float(self.get_wallet_stats['transactions']['total'])
         return self.functions.genlogistic_1(transactions, 1, 1, 50, 3000)
     
     def calculate_top_holders_HHI(self) -> float:
         # The Herfindahl-Hirschman Index (HHI) as a measurement of the concentration. 
+        if(self.token.type == 'sol'): return None # Need to calculate token holders for Solana tokens (not yet implemented)
         holders = self.data.ethplorer.get_eth_top_holders(self.token)
         holders = holders.sort_values(by='balance')
         holders['share']  = holders['share']  / 100
@@ -102,4 +106,4 @@ class TokenFactors:
     def calculate_oracle_confidence(self) -> float:
         # Fetch and return the CoinGecko rank of the token using an inverse rational transformation.
         confidence = float((100 * self.oracle_data['confidence']) / self.oracle_data['price'])
-        return self.functions.genlogistic_2(confidence, 1, 1, 50, 0.05)
+        return self.functions.genlogistic_2(confidence, 1, 1, 50, 0.4)
