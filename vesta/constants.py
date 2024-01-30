@@ -1,4 +1,14 @@
 tokens = {
+    "JLP": {
+        "type": "sol",
+        "symbol": "JLP",
+        "coingecko_id": "jupiter-perpetuals-liquidity-provider-token",
+        "sol_address": "27G8MtK7VtTcCHkpASjSDdkWWYfoqT6ggEuKidVJidD4",  
+        "sol_decimals": 6,
+        "eth_address": None, 
+        "eth_decimals": None,
+        'oracle_address': ""
+    },
     "ORCA": {
         "type": "sol",
         "symbol": "ORCA",
