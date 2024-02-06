@@ -11,23 +11,6 @@ class Processes:
 
     @staticmethod
     def merton_jump_diffusion_paths(muS: float, sigmaS: float, muJ: float, sigmaJ: float, lambdaJ: float, npaths: int, T: float, nsteps: int, S0: float, ) -> Optional[pd.DataFrame]:
-        """
-        Generates paths for the Merton jump-diffusion model.
-
-        Parameters:
-        npaths (int): Number of paths to generate.
-        T (float): Time horizon.
-        nsteps (int): Number of steps in the time horizon.
-        muS (float): Expected return of the security over period.
-        sigmaS (float): Volatility of the security over T.
-        muJ (float): Mean of the jump size.
-        sigmaJ (float): Volatility of the jump size.
-        lambdaJ (float): Intensity of the jump (expected number of jumps per unit of time).
-        S0 (float): Initial price of the security.
-
-        Returns:
-        Optional[List[np.ndarray]]: A list of numpy arrays containing the simulated paths, or None in case of an error.
-        """
         try:
             dt = T / nsteps  # time step
 
@@ -52,3 +35,5 @@ class Processes:
         except Exception as e:
             logging.error(f"Error computing merton paths: {e}")
             return None
+        
+

@@ -27,7 +27,7 @@ class Jupiter:
         usdc_quantity (int): The amount of USDC that will be traded into.
 
         Returns:
-        Optional[Dict[str, Any]]: The response from the quote API, or None if an error occurs.
+        Optional[Dict[str, Any]]: The response from the quote API - the price impact in %, or None if an error occurs.
         """
         # Retrieve the current price of the token in terms of USDC.
         price = self.coingecko.get_price(token)

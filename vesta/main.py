@@ -2,6 +2,7 @@ from vesta.functions.functions import Functions
 from vesta.data.data import Data
 from vesta.pricing.processes import Processes
 from vesta.pricing.optimisers import Optimisers
+from vesta.pricing.analytical import Analytical
 from web3 import Web3, HTTPProvider, IPCProvider, WebsocketProvider
 from solana.rpc.api import Client as SolClient
 from typing import Union, Type
@@ -29,6 +30,7 @@ class Vesta:
         self.moralis_client = MoralisClient(moralis_api_key)
         self.processes = Processes()
         self.optimisers = Optimisers()
+        self.analtical = Analytical()
 
         # New instances of the 'Functions' and 'Data' classes used in Vesta. 
         self.data = Data(self.etherscan, self.web3_client, self.sol_client, self.moralis_client)
