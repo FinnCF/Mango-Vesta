@@ -60,7 +60,7 @@ for init_weight in init_asset_weights:
                     print(f"Summary of Current Exposure and Risks for Setting - Init: {init_weight}, Maint: {maint_weight}, Limit: {deposit_limit}, Slippage: {slippage}:")
                     print(current_risks_df)
                     master_df = pd.concat([master_df, current_risks_df], ignore_index=True)
-
+master_df.to_csv('new.csv')
 
 # Observing nature of the put option.
 price_range = np.linspace(0.1, price * 2, 500)  
@@ -70,7 +70,7 @@ for t in time_periods_for_plot:
     liq_price = liq_price = (price * init_asset_weights[0]) / maint_asset_weights[0]
     values = [vsta.analytical.binary_put_price(p, liq_price, T, t, risk_free_rate, sigma, 1) for p in price_range]
     ax.plot(price_range, values, label=f'Time to Expiry: {T-t} Years')
-ax.set_title('Value for Different Time Periods to Expiry')
+ax.set_title('Value for Different Time Periods against Price')
 ax.set_xlabel('Price')
 ax.set_ylabel('Value')
 ax.legend(title='Time Periods', bbox_to_anchor=(1.05, 1), loc='upper left')
