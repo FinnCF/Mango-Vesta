@@ -3,8 +3,6 @@ import numpy as np
 import pandas as pd
 import logging
 from scipy.stats import norm
-
-
 from typing import Optional, List
 import numpy as np
 import pandas as pd

@@ -59,12 +59,12 @@ for init_weight in init_asset_weights:
                     shortfall_quantity = shortfall_value / price
 
                     # Greeks and Price
-                    values = [vsta.analtical.vanilla_put_price(price, liq_price, T, t, risk_free_rate, 5 * (31/365)) for t in remaining_time_values]
-                    deltas = [vsta.analtical.vanilla_put_delta(price, liq_price, T, t, risk_free_rate, 5 * (31/365)) for t in remaining_time_values]
-                    gammas = [vsta.analtical.vanilla_put_gamma(price, liq_price, T, t, risk_free_rate, 5 * (31/365)) for t in remaining_time_values]
-                    thetas = [vsta.analtical.vanilla_put_theta(price, liq_price, T, t, risk_free_rate, 5 * (31/365)) for t in remaining_time_values]
-                    speed = [vsta.analtical.vanilla_put_speed(price, liq_price, T, t, risk_free_rate, 5 * (31/365)) for t in remaining_time_values]
-                    vegas = [vsta.analtical.vanilla_put_vega(price, liq_price, T, t, risk_free_rate, 5 * (31/365)) for t in remaining_time_values]
+                    values = [vsta.analytical.vanilla_put_price(price, liq_price, T, t, risk_free_rate, 5 * (31/365)) for t in remaining_time_values]
+                    deltas = [vsta.analytical.vanilla_put_delta(price, liq_price, T, t, risk_free_rate, 5 * (31/365)) for t in remaining_time_values]
+                    gammas = [vsta.analytical.vanilla_put_gamma(price, liq_price, T, t, risk_free_rate, 5 * (31/365)) for t in remaining_time_values]
+                    thetas = [vsta.analytical.vanilla_put_theta(price, liq_price, T, t, risk_free_rate, 5 * (31/365)) for t in remaining_time_values]
+                    speed = [vsta.analytical.vanilla_put_speed(price, liq_price, T, t, risk_free_rate, 5 * (31/365)) for t in remaining_time_values]
+                    vegas = [vsta.analytical.vanilla_put_vega(price, liq_price, T, t, risk_free_rate, 5 * (31/365)) for t in remaining_time_values]
                     short_positions = [-delta * shortfall_value for delta in deltas]
 
                     # Create a temporary DataFrame
@@ -98,7 +98,7 @@ time_periods_for_plot = np.linspace(0, 1, 15)
 
 fig, ax = plt.subplots(figsize=(10, 6))
 for t in time_periods_for_plot:
-    values = [vsta.analtical.vanilla_put_price(p, liq_price, T, t, risk_free_rate, 5 * (31/365)) for p in price_range]
+    values = [vsta.analytical.vanilla_put_price(p, liq_price, T, t, risk_free_rate, 5 * (31/365)) for p in price_range]
     ax.plot(price_range, values, label=f'Time to Expiry: {T-t} Years')
 ax.set_title('Value for Different Time Periods to Expiry')
 ax.set_xlabel('Price')
@@ -109,7 +109,7 @@ plt.show()
 
 fig, ax = plt.subplots(figsize=(10, 6))
 for t in time_periods_for_plot:
-    deltas_for_prices = [vsta.analtical.vanilla_put_delta(p, liq_price, T, t, risk_free_rate, 5 * (31/365)) for p in price_range]
+    deltas_for_prices = [vsta.analytical.vanilla_put_delta(p, liq_price, T, t, risk_free_rate, 5 * (31/365)) for p in price_range]
     ax.plot(price_range, deltas_for_prices, label=f'Time to Expiry: {T-t} Years')
 ax.set_title('Delta vs. Price for Different Time Periods to Expiry')
 ax.set_xlabel('Price')
@@ -119,7 +119,7 @@ plt.show()
 
 fig, ax = plt.subplots(figsize=(10, 6))
 for t in time_periods_for_plot:
-    gammas_for_prices = [vsta.analtical.vanilla_put_gamma(p, liq_price, T, t, risk_free_rate, 5 * (31/365)) for p in price_range]
+    gammas_for_prices = [vsta.analytical.vanilla_put_gamma(p, liq_price, T, t, risk_free_rate, 5 * (31/365)) for p in price_range]
     ax.plot(price_range, gammas_for_prices, label=f'Time to Expiry: {T-t} Years')
 ax.set_title('Delta vs. Price for Different Time Periods to Expiry')
 ax.set_xlabel('Price')
@@ -129,7 +129,7 @@ plt.show()
 
 fig, ax = plt.subplots(figsize=(10, 6))
 for t in time_periods_for_plot:
-    thetas_for_prices = [vsta.analtical.vanilla_put_theta(p, liq_price, T, t, risk_free_rate, 5 * (31/365)) for p in price_range]
+    thetas_for_prices = [vsta.analytical.vanilla_put_theta(p, liq_price, T, t, risk_free_rate, 5 * (31/365)) for p in price_range]
     ax.plot(price_range, thetas_for_prices, label=f'Time to Expiry: {T-t} Years')
 ax.set_title('Theta vs. Price for Different Time Periods to Expiry')
 ax.set_xlabel('Price')
@@ -139,7 +139,7 @@ plt.show()
 
 fig, ax = plt.subplots(figsize=(10, 6))
 for t in time_periods_for_plot:
-    speed_for_prices = [vsta.analtical.vanilla_put_speed(p, liq_price, T, t, risk_free_rate, 5 * (31/365)) for p in price_range]
+    speed_for_prices = [vsta.analytical.vanilla_put_speed(p, liq_price, T, t, risk_free_rate, 5 * (31/365)) for p in price_range]
     ax.plot(price_range, speed_for_prices, label=f'Time to Expiry: {T-t} Years')
 ax.set_title('Speed vs. Price for Different Time Periods to Expiry')
 ax.set_xlabel('Price')
@@ -149,7 +149,7 @@ plt.show()
 
 fig, ax = plt.subplots(figsize=(10, 6))
 for t in time_periods_for_plot:
-    vega_for_prices = [vsta.analtical.vanilla_put_vega(p, liq_price, T, t, risk_free_rate, 5 * (31/365)) for p in price_range]
+    vega_for_prices = [vsta.analytical.vanilla_put_vega(p, liq_price, T, t, risk_free_rate, 5 * (31/365)) for p in price_range]
     ax.plot(price_range, vega_for_prices, label=f'Time to Expiry: {T-t} Years')
 ax.set_title('Vega vs. Price for Different Time Periods to Expiry')
 ax.set_xlabel('Price')
