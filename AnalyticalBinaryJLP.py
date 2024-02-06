@@ -64,12 +64,13 @@ master_df.to_csv('new.csv')
 
 # Observing nature of the put option.
 price_range = np.linspace(0.1, price * 2, 500)  
-time_periods_for_plot = np.linspace(0.01, 1, 20)
+time_periods_for_plot = np.linspace(0, 1, 10)
 fig, ax = plt.subplots(figsize=(10, 6))
+
 for t in time_periods_for_plot:
     liq_price = liq_price = (price * init_asset_weights[0]) / maint_asset_weights[0]
     values = [vsta.analytical.binary_put_price(p, liq_price, T, t, risk_free_rate, sigma, 1) for p in price_range]
-    ax.plot(price_range, values, label=f'Time to Expiry: {T-t} Years')
+    ax.plot(price_range, values, label=f'Time to Expiry: {round(100 * (T-t)) / 100}')
 ax.set_title('Value for Different Time Periods against Price')
 ax.set_xlabel('Price')
 ax.set_ylabel('Value')
@@ -80,7 +81,7 @@ fig, ax = plt.subplots(figsize=(10, 6))
 for t in time_periods_for_plot:
     liq_price = liq_price = (price * init_asset_weights[0]) / maint_asset_weights[0]
     deltas_for_prices = [vsta.analytical.binary_put_delta(p, liq_price, T, t, risk_free_rate, sigma) for p in price_range]
-    ax.plot(price_range, deltas_for_prices, label=f'Time to Expiry: {T-t} Years')
+    ax.plot(price_range, deltas_for_prices, label=f'Time to Expiry: {round(100 * (T-t)) / 100}')
 ax.set_title('Delta vs. Price for Different Time Periods to Expiry')
 ax.set_xlabel('Price')
 ax.set_ylabel('Delta')
@@ -91,7 +92,7 @@ fig, ax = plt.subplots(figsize=(10, 6))
 for t in time_periods_for_plot:
     liq_price = liq_price = (price * init_asset_weights[0]) / maint_asset_weights[0]
     gammas_for_prices = [vsta.analytical.binary_put_gamma(p, liq_price, T, t, risk_free_rate, sigma) for p in price_range]
-    ax.plot(price_range, gammas_for_prices, label=f'Time to Expiry: {T-t} Years')
+    ax.plot(price_range, gammas_for_prices, label=f'Time to Expiry: {round(100 * (T-t)) / 100}')
 ax.set_title('Gamma vs. Price for Different Time Periods to Expiry')
 ax.set_xlabel('Price')
 ax.set_ylabel('Gamma')
@@ -102,7 +103,7 @@ fig, ax = plt.subplots(figsize=(10, 6))
 for t in time_periods_for_plot:
     liq_price = liq_price = (price * init_asset_weights[0]) / maint_asset_weights[0]
     thetas_for_prices = [vsta.analytical.binary_put_theta(p, liq_price, T, t, risk_free_rate, sigma) for p in price_range]
-    ax.plot(price_range, thetas_for_prices, label=f'Time to Expiry: {T-t} Years')
+    ax.plot(price_range, thetas_for_prices, label=f'Time to Expiry: {round(100 * (T-t)) / 100}')
 ax.set_title('Theta vs. Price for Different Time Periods to Expiry')
 ax.set_xlabel('Price')
 ax.set_ylabel('Theta')
@@ -113,7 +114,7 @@ fig, ax = plt.subplots(figsize=(10, 6))
 for t in time_periods_for_plot:
     liq_price = liq_price = (price * init_asset_weights[0]) / maint_asset_weights[0]
     speed_for_prices = [vsta.analytical.binary_put_speed(p, liq_price, T, t, risk_free_rate, sigma) for p in price_range]
-    ax.plot(price_range, speed_for_prices, label=f'Time to Expiry: {T-t} Years')
+    ax.plot(price_range, speed_for_prices, label=f'Time to Expiry: {round(100 * (T-t)) / 100}')
 ax.set_title('Speed vs. Price for Different Time Periods to Expiry')
 ax.set_xlabel('Price')
 ax.set_ylabel('Speed')
@@ -124,7 +125,7 @@ fig, ax = plt.subplots(figsize=(10, 6))
 for t in time_periods_for_plot:
     liq_price = liq_price = (price * init_asset_weights[0]) / maint_asset_weights[0]
     vega_for_prices = [vsta.analytical.binary_put_vega(p, liq_price, T, t, risk_free_rate, sigma) for p in price_range]
-    ax.plot(price_range, vega_for_prices, label=f'Time to Expiry: {T-t} Years')
+    ax.plot(price_range, vega_for_prices, label=f'Time to Expiry: {round(100 * (T-t)) / 100}')
 ax.set_title('Vega vs. Price for Different Time Periods to Expiry')
 ax.set_xlabel('Price')
 ax.set_ylabel('Vega')

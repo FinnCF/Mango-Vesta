@@ -17,7 +17,6 @@ class Risk:
         Calculate and return current values for given parameters.
         """
         leverage = 1 / (1 - init_asset_weight)
-        leverage = 1 / (1 - init_asset_weight)
         liq_price = (price * init_asset_weight) / maint_asset_weight
         price_drop = 100 * ((liq_price - price) / price)
         perc_of_mktcp = 100 * (deposit_limit / (supply * price))
@@ -32,14 +31,15 @@ class Risk:
         shortfall_value = borrowed_quantity * (slippage / 100)
         shortfall_quantity = shortfall_value / price
 
+        # Analytic black scholes solutions
         current_value = vsta.analytical.binary_put_price(price, liq_price, T, t, risk_free_rate, sigma, 1)
         current_delta = vsta.analytical.binary_put_delta(price, liq_price, T, t, risk_free_rate, sigma)
         current_gamma = vsta.analytical.binary_put_gamma(price, liq_price, T, t, risk_free_rate, sigma)
         current_theta = vsta.analytical.binary_put_theta(price, liq_price, T, t, risk_free_rate, sigma)
         current_speed = vsta.analytical.binary_put_speed(price, liq_price, T, t, risk_free_rate, sigma)
         current_vega = vsta.analytical.binary_put_vega(price, liq_price, T, t, risk_free_rate, sigma)
-        current_exposure = vsta.analytical.binary_put_price(price, liq_price, T, t, risk_free_rate, sigma, shortfall_value)
-        current_short_positions = current_delta * shortfall_value
+        current_exposure = vsta.analytical.binary_put_price(price, liq_price, T, t, risk_free_rate, sigma, shortfall_value) # Exposure is simply a large contract size on a binary (=1 payoff) put.
+        current_short_positions = current_delta * shortfall_value # Delta hedge, delta * notional
 
         # Exposure collateral ratio as the monthly APR that should be charged (the fees required to cover the exposure to the protocol)
         current_exposure_coll_ratio = 100 * (current_exposure / collateral_value)
