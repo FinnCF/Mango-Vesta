@@ -129,7 +129,6 @@ class Analytical:
 
     @staticmethod
     def vanilla_put_delta(S, K, T, t, r, sigma):
-        remaining_time = T - t
         d1 = Analytical._d1(S, K, T, t, r, sigma)
         if d1 is not None:
             return norm.cdf(d1) - 1

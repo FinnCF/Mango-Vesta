@@ -22,11 +22,11 @@ t = 0
 sigma = 5 * (31/365)
 
 # Parameter settings estimation
-init_asset_weights = [0.66, 0.75]
+init_asset_weights = [0.66]
 init_liab_weight = 1
 maint_asset_weights = [0.75, 0.9]
 maint_liab_weight = 1
-deposit_limits_and_slippages = [{750_000: 0.88}, {1_000_000: 1.16}, {2_000_000: 2.33}, {5_000_000: 5.83}]
+deposit_limits_and_slippages = [{750_000: 0.88}, {1_000_000: 1.16}, {2_000_000: 2.33}, {5_000_000: 5.83}, {5_000_000: 5.83}, ]
 remaining_time_values = np.linspace(T - t, 0, 718)  # From T-t to 0
 
 # Instantiate the web3 research provider with etherscan and infura
@@ -67,6 +67,7 @@ price_range = np.linspace(0.1, price * 2, 500)
 time_periods_for_plot = np.linspace(0, 1, 10)
 fig, ax = plt.subplots(figsize=(10, 6))
 
+# Plots
 for t in time_periods_for_plot:
     liq_price = liq_price = (price * init_asset_weights[0]) / maint_asset_weights[0]
     values = [vsta.analytical.binary_put_price(p, liq_price, T, t, risk_free_rate, sigma, 1) for p in price_range]
